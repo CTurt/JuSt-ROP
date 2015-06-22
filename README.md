@@ -1,7 +1,7 @@
 # JuSt-ROP
 JavaScript ROP framework. For directly writing ROP chains in JavaScript before executing them via a browser exploit.
 
-All gadgets and chains shown here were tested on PlayStation 4 firmware 1.76. To use this for any other exploit you will need to make several manual tweaks (for 32bit, you should replace `* 8` with `* 4` for example).
+All gadgets and chains shown here were tested on PlayStation 4 firmware 1.76. To use this with any other exploit you will need to make several manual tweaks (for 32bit, you should replace `* 8` with `* 4` for example).
 
 ## Porting to your exploits
 Expose the following globally:
@@ -31,6 +31,11 @@ For example:
 The `instructions` parameter is optional, if it is non-empty then the memory at the gadget's pointer will be checked to ensure that it is correct (and followed by a `ret` instruction).
 
 ## Usage
+Make sure to include `just-rop.js` before `gadgets.js` to avoid getting a reference error:
+
+    <script type="text/javascript" src="just-rop.js"></script>
+    <script type="text/javascript" src="gadgets.js"></script>
+
 What you can do depends largely on what gadgets you have available, and the system that you are exploiting (sandboxing might disable some system calls for example).
 
 Here's a simple example chain:

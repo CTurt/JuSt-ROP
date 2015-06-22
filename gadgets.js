@@ -1,4 +1,4 @@
-var moduleBases;
+var moduleBases = [];
 
 var libKernel = 1;
 var libC = 2;
