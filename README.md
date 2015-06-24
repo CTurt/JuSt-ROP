@@ -1,9 +1,19 @@
 # JuSt-ROP
-JavaScript ROP framework. For directly writing ROP chains in JavaScript before executing them via a browser exploit.
+A framework which lets you directly write dynamic ROP chains in JavaScript before executing them via a browser exploit.
 
-All gadgets and chains shown here were tested on PlayStation 4 firmware 1.76. To use this with any other exploit you will need to make several manual tweaks (for 32bit, you should replace `* 8` with `* 4` for example).
+Using JavaScript to write and execute dynamic ROP chains gives us a tremendous advantage over a standard buffer overflow attack.
+
+For one thing, we can read the modules table and calculate the addresses of all gadgets before we trigger ROP execution, bypassing ASLR.
+
+We can also read the user agent of the browser, and provide a different ROP chain for different browser versions.
+
+We can even use JavaScript to read the memory at our gadgets' addresses to check that they are correct.
+
+Writing ROP chains dynamically, rather than generating them with a script beforehand, just makes sense.
 
 ## Porting to your exploits
+All gadgets and chains shown here were tested on PlayStation 4 firmware 1.76. To use this with any other exploit you will need to make several manual tweaks (for 32bit, you should replace things like `* 8` with `* 4` for example).
+
 Expose the following globally:
 * `getU8(address)`, `getU64(address)`, and `setU64(address, value)`
 * `stackBase`
@@ -36,7 +46,7 @@ Make sure to include `just-rop.js` before `gadgets.js` to avoid getting a refere
     <script type="text/javascript" src="just-rop.js"></script>
     <script type="text/javascript" src="gadgets.js"></script>
 
-What you can do depends largely on what gadgets you have available, and the system that you are exploiting (sandboxing might disable some system calls for example).
+And what you can do now depends largely on what gadgets you have available, and the system that you are exploiting (sandboxing might disable some system calls for example).
 
 Here's a simple example chain:
 
