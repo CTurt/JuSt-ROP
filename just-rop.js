@@ -64,6 +64,19 @@ function rop(chainAddress) {
 		this.add("mov r10, rcx and syscall");
 	}
 	
+	this.call = function(name, module, address, arg1, arg2, arg3, arg4, arg5, arg6) {
+		console.log("call " + name);
+		
+		if(typeof(arg1) !== "undefined") this.add("pop rdi", arg1);
+		if(typeof(arg2) !== "undefined") this.add("pop rsi", arg2);
+		if(typeof(arg3) !== "undefined") this.add("pop rdx", arg3);
+		if(typeof(arg4) !== "undefined") this.add("pop rcx", arg4);
+		if(typeof(arg5) !== "undefined") this.add("pop r8", arg5);
+		if(typeof(arg6) !== "undefined") this.add("pop r9", arg6);
+		this.add("pop rbp", stack_base + return_va - (chainLength + 8) + 0x1480);
+		this.add(module_bases[module] + address);
+	}
+	
 	// Modifies rsi
 	this.write_rax = function(address) {
 		var valueAddress = this.add("pop rsi", address - 0x18) - 8;
