@@ -20,6 +20,8 @@ Expose the following globally:
 * `returnAddress` (so `stackBase + returnAddress` points to the return value of a function)
 * `moduleBases` (an array of module base addresses)
 
+Modify the `chainAddress` declaration to point somewhere suitable for your exploit.
+
 Then place your gadgets in the the `gadgets` array, using this syntax to declare a gadget:
 
     gadget(instructions, module, address)
@@ -50,9 +52,7 @@ And what you can do now depends largely on what gadgets you have available, and 
 
 Here's a simple example chain:
 
-    var chain = new rop(stackBase + returnAddress + 0x420);
-    
-    var SIGKILL = 9;
+    var chain = new rop();
     
     try {
         chain.syscall("getpid", 20);
@@ -60,15 +60,10 @@ Here's a simple example chain:
         // rax is the return value
         chain.write_rax_ToVariable(0);
         
-        chain.read_rdi_FromVariable(0);
-        
-        // rdi already has desired value so don't overwrite it
-        chain.syscall("kill", 37, undefined, SIGKILL);
-        
-        chain.execute();
+        chain.execute(function() {
+            console.log("PID: " + chain.getVariable(0).toString());
+        });
     }
     catch(e) {
         logAdd("Incorrect gadget address " + e.toString(16));
     }
-    
-    chain.logVariable(0);

